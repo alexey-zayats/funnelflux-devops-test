@@ -1,0 +1,22 @@
+controller:
+  name: controller
+
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 11
+    targetCPUUtilizationPercentage: 50
+    targetMemoryUtilizationPercentage: 50
+
+  service:
+    enabled: true
+    type: LoadBalancer
+    externalTrafficPolicy: Local
+
+  metrics:
+    enabled: true
+    serviceMonitor:
+      namespace: monitoring
+      enabled: true
+      additionalLabels:
+        release: prometheus

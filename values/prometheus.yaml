@@ -1,0 +1,109 @@
+
+alertmanager:
+  enabled: true
+
+  ingress:
+    enabled: true
+
+    annotations:
+      kubernetes.io/ingress.class: "nginx"
+      cert-manager.io/issuer: letsencrypt
+      cert-manager.io/acme-challenge-type: http01
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+
+    hosts:
+      - alertm.zayats.me
+
+    paths:
+      - /
+
+    tls:
+      - secretName: alertm-zayats-me-tls
+        hosts:
+          - alertm.zayats.me
+
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: standard
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 50Gi
+
+    externalUrl: https://alertm.zayats.me
+    routePrefix: /
+
+grafana:
+  enabled: true
+  adminPassword: ilNrXYqNDO5buTInHqNKdakq
+
+  defaultDashboardsEnabled: true
+
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+
+  persistence:
+    enabled: true
+    type: pvc
+    size: 10Gi
+    storageClassName: standard
+
+  ingress:
+    enabled: true
+
+    annotations:
+      kubernetes.io/ingress.class: "nginx"
+      cert-manager.io/issuer: letsencrypt
+      cert-manager.io/acme-challenge-type: http01
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+
+    hosts:
+      - grafana.zayats.me
+
+    path: /
+
+    tls:
+      - secretName: grafana-zayats-me-tls
+        hosts:
+          - grafana.zayats.me
+
+coreDns:
+  enabled: false
+
+prometheus:
+  enabled: true
+
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: "nginx"
+      cert-manager.io/issuer: letsencrypt
+      cert-manager.io/acme-challenge-type: http01
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+
+    hosts:
+      - prometheus.zayats.me
+
+    paths:
+      - /
+
+    tls:
+      - secretName: prometheus-zayats-me-tls
+        hosts:
+          - prometheus.zayats.me
+
+  prometheusSpec:
+    externalUrl: https://prometheus.zayats.me
+    serviceMonitorSelector: {}
+    storageSpec:
+     volumeClaimTemplate:
+       spec:
+         storageClassName: standard
+         accessModes: ["ReadWriteOnce"]
+         resources:
+           requests:
+             storage: 50Gi
